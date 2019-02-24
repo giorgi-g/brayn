@@ -126,14 +126,20 @@ class InvoiceController extends Controller
             return response()->json(json_decode($invoices));
         }
     }
-
+    /*
+     *  Exporting the data in excel
+     *  @type can be xls, xlsx.
+     *  NOTE: The data must be an array where the keys are Excel columns and values are appropriate rows. 
+     *  WARNING: STILL COULD NOT MANAGE TO CORRECT THE PACKAGE ERROR!
+     */
     public function export(Request $request) {
-        $data = $request->data;
-        return Excel::create('Invoices-'.date('d-m-Y_His'), function($excel) use ($data) {
+        $type = isset($request->type) ? $request->type : 'xlsx';
+        $data = isset($request->data) ? $request->data : [];
+        return Excel::download(function($excel) use ($data) {
             $excel->sheet('Invoices', function($sheet) use ($data) {
                 $sheet->fromArray($data);
             });
-        })->download('xlsx');
+        }, 'invoice.'.$type);
     }
 
     public function editInvoice(Request $request, $id) {

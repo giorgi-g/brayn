@@ -20,7 +20,7 @@ Route::group([], function () {
 
         Route::get('login', 'LoginController@showLoginForm')->name('adminLogin')->middleware('guest');
   
-        // Route::get('invoices/export', 'InvoiceController@export');
+        Route::post('invoices/export', 'InvoiceController@export');
         Route::get('invoices/browse_invoices', 'InvoiceController@browseInvoices');
         Route::get('invoices/create_invoice', 'InvoiceController@createInvoice');
         Route::get('invoices/edit_invoice/{id}', 'InvoiceController@editInvoice');

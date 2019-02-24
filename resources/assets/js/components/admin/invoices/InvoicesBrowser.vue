@@ -8,10 +8,12 @@
             <div class="col-xs-12 col-sm-6 col-md-4">
                 <el-button type="button" @click="getData"><i class="fa fa-search"></i></el-button>
             </div>
+
             <div class="col-xs-12 col-sm-6 col-md-4">
                 <span @click="Export">Export Excel</span>
             </div>
         </div>
+
         <table class="table table-hover dataTable table-bordered width-full table-small combo-table">
             <thead>
                 <tr>
@@ -49,7 +51,6 @@
         },
         data() {
             return {
-                typeTitle: null,
                 data:[],
                 pagination: {
                     current_page: 1,
@@ -79,7 +80,6 @@
                     email: null,
                 },
                 checkedStatuses: [],
-                checkedCategories: [],
             }
         },
         watch: {
@@ -89,20 +89,27 @@
                 }
             },
             params(newValue, oldValue) {
-                this.getData();
+                // We can either watch the params values changes or make data fetch on Button submit
+                // this.getData();
             },
-            // In case of categories change data will be fetched from the database again
-            checkedCategories: function (newValue, oldValue) {
-                this.getData();
-            },
-            // In case of statuses change data will be fetched from the database again
+            /*
+             *  In case of statuses change data will be fetched from the database again.
+             *  NOTE: Adding click delay on each item will be a great advantage. 
+             */
             checkedStatuses: function(newValue, oldValue) {
                 this.getData();
             },
         },
         methods: {
             Export() {
-                this.$http.get('/admin/invoices/export', {
+                /*
+                 *  The data sent in params is a paginated data.
+                 *  We have to send other parameters to filter data which is going to be exported
+                 *  
+                 *  We will require queues for server side rendering, because annual data can be too large
+                 *  And throw maximum execution time error or memory limit error!
+                 */
+                /*this.$http.get('/admin/invoices/export', {
                     headers: { 'Accept':'application/json' }, 
                     params: {
                         data: this.data,
@@ -111,9 +118,17 @@
 
                 }, function(error) {
                     console.log(error);
+                });*/
+
+                this.$http.post('/admin/invoices/export', this.data, this.Headers()).then(response => {
+                    let fileDownload = require('js-file-download');
+                    fileDownload(response.data, 'filename.xlsx'); // Need too correct, returns corrupted file!
+                }, function(error) {
+                    console.log(error);
                 });
             },
             changeDate(date) {
+                // To return custom value on date change
                 this.params.service_period = Vue.moment(date).format('YYYY-MM-DD, H:mm:ss');
             },
             getData() {
@@ -124,6 +139,10 @@
                         params: this.params,
                     }
                 }).then(response => {
+                    /*
+                     *  After receiving the data we update the pagination object
+                     *  Push the list of debits to the Data variable and render the table
+                     */
                     if (this.pagination.current_page == 1) {
                         this.pagination.current_page = response.data.page;
                     }

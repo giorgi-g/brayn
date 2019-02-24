@@ -112562,6 +112562,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     mounted: function mounted() {
@@ -112569,7 +112571,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     data: function data() {
         return {
-            typeTitle: null,
             data: [],
             pagination: {
                 current_page: 1,
@@ -112598,8 +112599,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 invoice_id: null,
                 email: null
             },
-            checkedStatuses: [],
-            checkedCategories: []
+            checkedStatuses: []
         };
     },
 
@@ -112610,30 +112610,46 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
         },
         params: function params(newValue, oldValue) {
-            this.getData();
+            // We can either watch the params values changes or make data fetch on Button submit
+            // this.getData();
         },
 
-        // In case of categories change data will be fetched from the database again
-        checkedCategories: function checkedCategories(newValue, oldValue) {
-            this.getData();
-        },
-        // In case of statuses change data will be fetched from the database again
+        /*
+         *  In case of statuses change data will be fetched from the database again.
+         *  NOTE: Adding click delay on each item will be a great advantage. 
+         */
         checkedStatuses: function checkedStatuses(newValue, oldValue) {
             this.getData();
         }
     },
     methods: {
         Export: function Export() {
-            this.$http.get('/admin/invoices/export', {
-                headers: { 'Accept': 'application/json' },
+            /*
+             *  The data sent in params is a paginated data.
+             *  We have to send other parameters to filter data which is going to be exported
+             *  
+             *  We will require queues for server side rendering, because annual data can be too large
+             *  And throw maximum execution time error or memory limit error!
+             */
+            /*this.$http.get('/admin/invoices/export', {
+                headers: { 'Accept':'application/json' }, 
                 params: {
-                    data: this.data
+                    data: this.data,
                 }
-            }).then(function (response) {}, function (error) {
+            }).then(response => {
+             }, function(error) {
+                console.log(error);
+            });*/
+
+            this.$http.post('/admin/invoices/export', this.data, this.Headers()).then(function (response) {
+                var fileDownload = __webpack_require__(246);
+                fileDownload(response.data, 'filename.xlsx'); // Need too correct, returns corrupted file!
+            }, function (error) {
                 console.log(error);
             });
         },
         changeDate: function changeDate(date) {
+            // To return custom value on date change
             this.params.service_period = Vue.moment(date).format('YYYY-MM-DD, H:mm:ss');
         },
         getData: function getData() {
@@ -112646,6 +112662,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     params: this.params
                 }
             }).then(function (response) {
+                /*
+                 *  After receiving the data we update the pagination object
+                 *  Push the list of debits to the Data variable and render the table
+                 */
                 if (_this.pagination.current_page == 1) {
                     _this.pagination.current_page = response.data.page;
                 }
@@ -113335,6 +113355,52 @@ if (false) {
     require("vue-hot-reload-api")      .rerender("data-v-0f482911", module.exports)
   }
 }
+
+/***/ }),
+/* 236 */,
+/* 237 */,
+/* 238 */,
+/* 239 */,
+/* 240 */,
+/* 241 */,
+/* 242 */,
+/* 243 */,
+/* 244 */,
+/* 245 */,
+/* 246 */
+/***/ (function(module, exports) {
+
+module.exports = function(data, filename, mime) {
+    var blob = new Blob([data], {type: mime || 'application/octet-stream'});
+    if (typeof window.navigator.msSaveBlob !== 'undefined') {
+        // IE workaround for "HTML7007: One or more blob URLs were 
+        // revoked by closing the blob for which they were created. 
+        // These URLs will no longer resolve as the data backing 
+        // the URL has been freed."
+        window.navigator.msSaveBlob(blob, filename);
+    }
+    else {
+        var blobURL = window.URL.createObjectURL(blob);
+        var tempLink = document.createElement('a');
+        tempLink.style.display = 'none';
+        tempLink.href = blobURL;
+        tempLink.setAttribute('download', filename); 
+        
+        // Safari thinks _blank anchor are pop ups. We only want to set _blank
+        // target if the browser does not support the HTML5 download attribute.
+        // This allows you to download files in desktop safari if pop up blocking 
+        // is enabled.
+        if (typeof tempLink.download === 'undefined') {
+            tempLink.setAttribute('target', '_blank');
+        }
+        
+        document.body.appendChild(tempLink);
+        tempLink.click();
+        document.body.removeChild(tempLink);
+        window.URL.revokeObjectURL(blobURL);
+    }
+}
+
 
 /***/ })
 /******/ ]);
