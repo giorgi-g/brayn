@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Input;
 use App\Events\RoutesUpdated;
 use App\Helpers\Helper;
 use File;
+use Excel;
 
 class InvoiceController extends Controller
 {
@@ -111,6 +112,8 @@ class InvoiceController extends Controller
         if ($request->expectsJson()) {
             $params = $request->params;
             $params['page'] = intval($params['page']);
+            $params['service_period'] = date('Y-m-d', strtotime($params['service_period']));
+
             $id = !is_null($request->id) ? $request->id : null; 
             /*
              *  I have created a helper to receive API data 
@@ -124,54 +127,30 @@ class InvoiceController extends Controller
         }
     }
 
-    public function createAjax(Request $request) {
+    public function export(Request $request) {
+        $data = $request->data;
+        return Excel::create('Invoices-'.date('d-m-Y_His'), function($excel) use ($data) {
+            $excel->sheet('Invoices', function($sheet) use ($data) {
+                $sheet->fromArray($data);
+            });
+        })->download('xlsx');
+    }
+
+    public function editInvoice(Request $request, $id) {
         if ($request->expectsJson()) {
+            $params = [];
+            $invoices = Helper::apiData($id, $params);
+
+            return response()->json(json_decode($invoices));
+        }        
+    }
+
+    public function createInvoice(Request $request) {
+        if ($request->expectsJson()) {
+
             return response()->json([
-                "statuses"  => $this->getStatuses(),
-                "types"     => config('pages.types'),
-                "templates" => config('pages.templates'),
+
             ], 200);
         }
-    }
-
-    public function edit_ajax(Request $request, $id) {
-        if ($request->expectsJson()) {
-            $page = Multitenant::getModel('Page')::where(['page_id'=> $id,'lang_id'=>\App('language')->current->id])->first();
-
-            if (is_null($page)) {
-                $page = Multitenant::getModel('Page')::where(['id'=> $id])->first();
-            }
-
-            if (!is_null($page)) {
-                $page->load('coverPhoto');
-                $page->load('ogPhoto');
-                $page->load('mainImage');
-            }
-
-            $data = [
-                'pages'     => $page,
-                "statuses"  => $this->getStatuses(),
-                "types"     => config('pages.types'),
-                "templates" => config('pages.templates'),
-                'language'  => \App('language'),
-                'message'   => 'გვერდი წრმატებულად რედაქტირდა!',
-            ];
-            return response()->json($data);
-        }
-    }
-
-    /**
-     * Type use as for identifing this type of page in database
-     *
-     * @return String
-     */
-    protected function pageType()
-    {
-        return config('pages.page_type.page.id');
-    }
-
-    protected function getStatuses()
-    {
-        return config('pages.status');
     }
 }

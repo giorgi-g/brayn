@@ -1,5 +1,17 @@
 <template>
     <div class="container">
+        <div class="row filter-form">
+            <div class="col-xs-12 col-sm-6 col-md-4">
+                <label class="control-label"></label>
+                <el-date-picker required :editable="false" name="date" v-model="params.service_period" type="date" placeholder="Select Date" @change="changeDate(params.service_period)"></el-date-picker>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-4">
+                <el-button type="button" @click="getData"><i class="fa fa-search"></i></el-button>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-4">
+                <span @click="Export">Export Excel</span>
+            </div>
+        </div>
         <table class="table table-hover dataTable table-bordered width-full table-small combo-table">
             <thead>
                 <tr>
@@ -16,7 +28,11 @@
                     <th>{{ item.Debitor.name }}</th>
                     <th>{{ item.brutto }}</th>
                     <th>{{ item.netto }}</th>
-                    <th><i class="fa fa-eye" @click="openItem(item.id)"></i></th>
+                    <th>
+                        <router-link :to="{name: 'EditInvoice', params: { id: item.id }}" class="animsition-link" >
+                            <i class="fa fa-edit"></i>
+                        </router-link>
+                    </th>
                 </tr>
             </tbody>
         </table>
@@ -62,67 +78,6 @@
                     invoice_id: null,
                     email: null,
                 },
-                invoice: {
-                    id:null,
-                    debitor_id:null,
-                    receipt_id:null,
-                    attendant:null,
-                    billing_number:null,
-                    service_period:null,
-                    term_of_credit:null,
-                    no_tax:null,
-                    is_payment_instructed:null,
-                    Debitor: {
-                        id:null,
-                        contact_id:null,
-                        number:null,
-                        tax_number:null,
-                        debit_payment:null,
-                        iban:null,
-                        bic:null,
-                        email:null,
-                        send_email_bills:null,
-                        deactivated:null,
-                        language:null,
-                        last_invoice_number:null,
-                        name:null,
-                        street:null,
-                        postcode:null,
-                        location:null,
-                        country:null,
-                        crm_id:null,
-                    },
-                    remarks:null,
-                    receipt_date:null,
-                    date_paid:null,
-                    balance:null,
-                    file: {
-                        id:null,
-                        filename:null,
-                        file_url:null,
-                        file_exists:null,
-                    },
-                    excluded_reminder:null,
-                    items:[{
-                        id:null,
-                        description:null,
-                        amount:null,
-                        price:null,
-                        measurement:null,
-                        vat_rate:null,
-                        sum:null,
-                    }],
-                    attachment:{
-                        id:null,
-                        filename:null,
-                        file_url:null,
-                        file_exists:null,
-                    },
-                    netto:null,
-                    brutto:null,
-                    type:null,
-                    due_date:null,
-                },
                 checkedStatuses: [],
                 checkedCategories: [],
             }
@@ -133,6 +88,9 @@
                     this.getData();
                 }
             },
+            params(newValue, oldValue) {
+                this.getData();
+            },
             // In case of categories change data will be fetched from the database again
             checkedCategories: function (newValue, oldValue) {
                 this.getData();
@@ -140,21 +98,23 @@
             // In case of statuses change data will be fetched from the database again
             checkedStatuses: function(newValue, oldValue) {
                 this.getData();
-            }
+            },
         },
         methods: {
-            openItem(id) {
-                this.$http.get('/admin/invoices/browse_invoices', {
-                    headers: { 'Accept':'application/json' },
+            Export() {
+                this.$http.get('/admin/invoices/export', {
+                    headers: { 'Accept':'application/json' }, 
                     params: {
-                        id: id,
-                    } 
+                        data: this.data,
+                    }
                 }).then(response => {
-                    this.invoice = response.data;
-                    console.log('this.invoice', this.invoice);
+
                 }, function(error) {
                     console.log(error);
-                })
+                });
+            },
+            changeDate(date) {
+                this.params.service_period = Vue.moment(date).format('YYYY-MM-DD, H:mm:ss');
             },
             getData() {
                 this.params.page = this.pagination.current_page;
@@ -176,7 +136,7 @@
                     this.data = response.data._embedded.list_debits;
                 }, function(error) {
                     console.log(error);
-                })
+                });
             }
         }
     }

@@ -1,6 +1,7 @@
 import DashboardBrowser from '../components/admin/DashboardBrowser.vue';
 import InvoicesBrowser from '../components/admin/invoices/InvoicesBrowser.vue';
-import CreateInvoice from '../components/admin/invoices/CreateInvoice.vue';
+import CreateInvoice from '../components/admin/invoices/CreateInvoice.vue'; // Later Create and Edit component will be the same.
+import EditInvoice from '../components/admin/invoices/EditInvoice.vue';
 
 let _routes = [
         {
@@ -21,7 +22,7 @@ let _routes = [
         {
             path: '/admin/invoices/:id/edit',
             name: 'EditInvoice',
-            component: CreateInvoice
+            component: EditInvoice
         },
     ];
 export const routes = _routes;
