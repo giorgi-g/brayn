@@ -35,11 +35,11 @@ import VueMoment from 'vue-moment';
 import locale from 'element-ui/lib/locale/lang/en';
 import 'element-ui/lib/theme-chalk/index.css';
 import VueRouter from 'vue-router';
-import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
+// import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 
 Vue.use(ElementUI, { locale });
 Vue.use(VueResource);
-Vue.use(PulseLoader);
+// Vue.use(PulseLoader);
 Vue.use(VueRouter);
 Vue.use(VueMoment);
 Vue.use(VueSwal);
