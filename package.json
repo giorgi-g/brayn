@@ -12,7 +12,7 @@
     "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
     "prod": "npm run production",
     "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "test": "mocha-webpack --webpack-config=node_modules/laravel-mix/setup/webpack.config.js --require tests/Javascript/setup.js tests/Javascript/**/*.spec.js"
+    "test": "cross-env NODE_ENV=development mocha-webpack --webpack-config=node_modules/laravel-mix/setup/webpack.config.js --watch --require tests/Javascript/setup.js tests/Javascript/**/*.spec.js"
   },
   "repository": {
     "type": "git",
@@ -61,6 +61,7 @@
     "laravel-mix": "^1.0",
     "lodash": "^4.17.4",
     "mocha": "^4.0.1",
+    "mocha-axios": "^1.3.0",
     "mocha-webpack": "^0.7.0",
     "node-sass": "^4.9.0",
     "popper.js": "^1.14.7",
