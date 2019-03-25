@@ -1,3 +1,8 @@
 {
-    "/b88b208529a9a4f97df063f5cedb5b7f-output.js": "/b88b208529a9a4f97df063f5cedb5b7f-output.js"
+    "/js/admin/app.js": "/js/admin/app.js",
+    "/js/app.js": "/js/app.js",
+    "/css/app.css": "/css/app.css",
+    "/css/user/app.css": "/css/user/app.css",
+    "/css/admin/app.css": "/css/admin/app.css",
+    "/js/user/app.js": "/js/user/app.js"
 }
