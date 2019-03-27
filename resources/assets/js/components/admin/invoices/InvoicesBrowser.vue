@@ -1,6 +1,7 @@
 <template>
     <div class="container">
         <div class="row filter-form">
+            <h1>{{ text }}</h1>
             <div class="col-xs-12 col-sm-6 col-md-4">
                 <label class="control-label"></label>
                 <el-date-picker required :editable="false" name="date" v-model="params.service_period" type="date" placeholder="Select Date" @change="changeDate(params.service_period)"></el-date-picker>
@@ -52,6 +53,7 @@
         data() {
             return {
                 data:[],
+                text: '',
                 pagination: {
                     current_page: 1,
                     last_page: 1,

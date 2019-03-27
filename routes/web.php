@@ -13,6 +13,7 @@
 
 Route::group([], function () {
     Route::get('/', 'HomeController@index');
+    Route::get('/test', 'HomeController@test');
     Auth::routes();
     
     Route::namespace('Admin')->prefix('admin')->group(function () {

@@ -113283,6 +113283,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     mounted: function mounted() {
@@ -113291,6 +113292,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     data: function data() {
         return {
             data: [],
+            text: '',
             pagination: {
                 current_page: 1,
                 last_page: 1,
@@ -113451,6 +113453,8 @@ var render = function() {
     { staticClass: "container" },
     [
       _c("div", { staticClass: "row filter-form" }, [
+        _c("h1", [_vm._v(_vm._s(_vm.text))]),
+        _vm._v(" "),
         _c(
           "div",
           { staticClass: "col-xs-12 col-sm-6 col-md-4" },

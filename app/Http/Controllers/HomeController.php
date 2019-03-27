@@ -22,4 +22,13 @@ class HomeController extends Controller
     {
         return view('welcome');
     }
+
+    public function test(Request $request)
+    {
+        $response = [
+            'test' => 'blah!',
+            'blah' => 'test'
+        ];
+        return response()->json($response);
+    }
 }
