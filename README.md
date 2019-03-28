@@ -34,7 +34,7 @@ Setup
 	> - Run **npm install on your terminal, wait until the packages will be installed
 	> - Run **npm test for starting a testing environment, at the same time run 'npm run watch' command which will allow you to watch all the javascript/css files under resources/assets folder.
 	> - SPECS **All of the test files for Javascript must be stored under tests/Javascript folder with the extension spec.js. Otherwise you can reconfigure package.json 'npm test' command => 'scripts' : { 'test' }.
-	
+	> - Run **npm update if the modules will not be installed. But still current packages include the latest versions...
 	Permissions Documentation
 	
 	https://github.com/spatie/laravel-permission
