@@ -53,7 +53,7 @@
         data() {
             return {
                 data:[],
-                text: '',
+                text: "Invoices Browser",
                 pagination: {
                     current_page: 1,
                     last_page: 1,

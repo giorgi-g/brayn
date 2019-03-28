@@ -5,12 +5,11 @@
  *	To create the testing environment for vue for this current task. 
  */
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-// Helps us to create ajax requests!
-import moxios 		from 'moxios';
-// Spy package
-import expect from 'expect';
-import sinon from 'sinon';
-import { equal } from 'assert';
+// Importing axios to create axios instance
+import axios from 'axios';
+
+// Axios adapter for mocking the requests!
+import MockAdapter from'axios-mock-adapter'
 
 /*
  *	We include below packages using createLocalVue as `InvoicesBrowser` component uses them!
@@ -18,39 +17,91 @@ import { equal } from 'assert';
 import ElementUI 	from 'element-ui';
 import locale 		from 'element-ui/lib/locale/lang/en';
 import VueMoment 	from 'vue-moment';
+import VueRouter from 'vue-router';
 
 // Import an actual  
 import InvoicesBrowser from '../../../resources/assets/js/components/admin/invoices/InvoicesBrowser.vue';
+;
 
-describe('InvoicesBrowser', () => {
-	let wrapper;
-	let localVue;
+describe ('InvoicesBrowser', () => {
+	let wrapper; // variable for mounted component
+	let localVue; // Creating a new vue application instance
+	let componentInstance; // 
+    let axiosInstance;
+    let mock;
 
-	beforeEach(() => {
-    	moxios.install(axios);
+	beforeEach (() => {
+	    axiosInstance = axios.create();
+	    mock = new MockAdapter(axiosInstance);
 
 	    localVue = createLocalVue();
 		localVue.use(ElementUI, { locale });
 		localVue.use(VueMoment);
+		localVue.use(VueRouter);
 
+    	//	We must assign the vue app instance to the mounted component
     	wrapper = shallowMount(InvoicesBrowser, { localVue });
+
+    	/*
+    	 * 	We assign the view model of the component to `componentInstance` variable
+    	 *	Otherwise we can use `wrapper.vm` each time we want to get or set the value of the component's variable.
+    	 */
+	    componentInstance = wrapper.vm;
   	});
 
-  	it('shows the invoices fetched from the api', (done) => {
-    	moxios.stubRequest('/test', {
-			status: 200,
-			response: [
-				{
-					text: 'text',
-				}
-			],
-    	});
+	afterEach (() => {
+		// resetting the mocking history each time we make an ajax request
+		mock.resetHistory();
+	});
 
-		let onFulfilled = sinon.spy();
+    it ('Checks if component includes title', () => {
+    	expect(componentInstance.text).toBeTruthy();
+    	// or
+    	// expect(wrapper.vm.text).toBeTruthy();
+    });
 
-      	moxios.wait(() => {
-			expect(wrapper.html()).toContain('text');
-        	done();
-      	});
-  	});
+  	it('Fakes ajax request', done => {
+  		/*
+  		 *	After mocking the http request we create a fake data
+  		 *	Returning it via promise, with 200 `successful response`
+  		 *	If the data was not set we return a custom erro
+  		 */
+	    mock.onGet('/admin/invoices/browse_invoices')
+	      	.reply(() => {
+	        	return new Promise((resolve, reject) => {
+			        resolve([
+			        	200, // successful response message code. e.g 404 will return `Not found error`
+		        		// Faked array! Having the same structure as InvoicesBrowser `data` array.
+		        		[
+	        				{
+	        					id: 1,
+	        					Debitor: {
+	        						name: 'test data'
+	        					},
+	        					brutto: 'BruTTo',
+	        					netto: 'NeTTo'
+	        				}
+	        			]
+		        	])
+			        .reject({ err: 'Please learn how to fake data better!' });
+	        	});
+	      	});
+
+	    axiosInstance.get('/admin/invoices/browse_invoices')
+	      	.then((res) => {
+	      		// after fetching the data from the url we push the data to our component!
+	      		wrapper.setData({
+	      			data: res.data
+	      		});
+
+	      		// We check if the requested data was really set to our component 
+	      		expect(componentInstance.data.length).toBe(1);
+	      		expect(componentInstance.data[0].Debitor.name).toBe('test data');
+	      	})
+	      	// Type error message here
+	      	.catch((error) => {
+	      		console.log(error);
+	      	});
+	    done();
+    });
 });
