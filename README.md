@@ -1,6 +1,3 @@
-Welcome to LemonCMS!
-===================
-
 **Server Requirements**
 ___
 
