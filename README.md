@@ -36,5 +36,7 @@ Setup
 	> - SPECS **All of the test files for Javascript must be stored under tests/Javascript folder with the extension spec.js. Otherwise you can reconfigure package.json 'npm test' command => 'scripts' : { 'test' }.
 	> - Run **npm update if the modules will not be installed. But still current packages include the latest versions...
 	Permissions Documentation
+	> - Run **npm run watch to automatically compile your asset changes
+	> - Run **npm run watch:lint to see the code standard notification according to ./eslintrc.js config.
 	
 	https://github.com/spatie/laravel-permission

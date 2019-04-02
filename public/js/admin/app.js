@@ -14766,7 +14766,9 @@ try {
   window.$ = window.jQuery = __webpack_require__(8);
 
   __webpack_require__(28);
-} catch (e) {}
+} catch (e) {
+  console.log(e);
+}
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -49547,9 +49549,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    mounted: function mounted() {
-        // console.log('Component mounted.')
-    }
+  mounted: function mounted() {
+    // console.log('Component mounted.')
+  }
 });
 
 /***/ }),
@@ -49576,9 +49578,7 @@ var staticRenderFns = [
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "card-body" }, [
-              _vm._v(
-                "\n                    I'm an example component.\n                "
-              )
+              _vm._v("\n          I'm an example component.\n        ")
             ])
           ])
         ])
@@ -53475,9 +53475,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
  */
 
 __webpack_require__(25);
-
 window.Vue = __webpack_require__(3);
-
+var Vue = window.Vue;
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -53515,23 +53514,23 @@ Vue.use(__WEBPACK_IMPORTED_MODULE_4_vue_moment___default.a);
 Vue.use(__WEBPACK_IMPORTED_MODULE_1_vue_swal___default.a);
 
 Vue.use(__WEBPACK_IMPORTED_MODULE_2_vue_form___default.a, {
-    inputClasses: {
-        valid: 'form-control-success',
-        invalid: 'form-control-danger'
+  inputClasses: {
+    valid: 'form-control-success',
+    invalid: 'form-control-danger'
+  },
+  validators: {
+    matches: function matches(value, attrValue) {
+      if (!attrValue) {
+        return true;
+      }
+      return value === attrValue;
     },
-    validators: {
-        matches: function matches(value, attrValue) {
-            if (!attrValue) {
-                return true;
-            }
-            return value === attrValue;
-        },
-        'password-strength': function passwordStrength(value) {
-            // return /(?=^.{6,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/.test(value);
-            return (/(?=^.{6,}$)(?=.*[a-z]).*$/.test(value)
-            );
-        }
+    'password-strength': function passwordStrength(value) {
+      // return /(?=^.{6,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/.test(value);
+      return (/(?=^.{6,}$)(?=.*[a-z]).*$/.test(value)
+      );
     }
+  }
 });
 Vue.component('pagination', __webpack_require__(209));
 
@@ -53541,13 +53540,13 @@ __webpack_require__(217);
 
 
 var router = new __WEBPACK_IMPORTED_MODULE_7_vue_router__["a" /* default */]({
-    mode: 'history',
-    routes: __WEBPACK_IMPORTED_MODULE_8__routes__["a" /* routes */]
+  mode: 'history',
+  routes: __WEBPACK_IMPORTED_MODULE_8__routes__["a" /* routes */]
 });
 
-var app = new Vue({
-    el: '#app',
-    router: router
+new Vue({
+  el: '#app',
+  router: router
 });
 
 /***/ }),
@@ -112812,37 +112811,48 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['pagination', 'offset'],
-    methods: {
-        isCurrentPage: function isCurrentPage(page) {
-            return this.pagination.current_page === page;
-        },
-        changePage: function changePage(page) {
-            if (page > this.pagination.last_page) {
-                page = this.pagination.last_page;
-            }
-            this.pagination.current_page = page;
-            this.$emit('paginate');
-        }
+  props: {
+    pagination: {
+      type: Object,
+      default: null,
+      required: true
     },
-    computed: {
-        pages: function pages() {
-            var pages = [];
-            var from = this.pagination.current_page - Math.floor(this.offset / 2);
-            if (from < 1) {
-                from = 1;
-            }
-            var to = from + this.offset - 1;
-            if (to > this.pagination.last_page) {
-                to = this.pagination.last_page;
-            }
-            while (from <= to) {
-                pages.push(from);
-                from++;
-            }
-            return pages;
-        }
+    offset: {
+      type: Number,
+      default: 1,
+      required: true
     }
+  },
+  computed: {
+    pages: function pages() {
+      var pages = [];
+      var from = this.pagination.current_page - Math.floor(this.offset / 2);
+      if (from < 1) {
+        from = 1;
+      }
+      var to = from + this.offset - 1;
+      if (to > this.pagination.last_page) {
+        to = this.pagination.last_page;
+      }
+      while (from <= to) {
+        pages.push(from);
+        from++;
+      }
+      return pages;
+    }
+  },
+  methods: {
+    isCurrentPage: function isCurrentPage(page) {
+      return this.pagination.current_page === page;
+    },
+    changePage: function changePage(page) {
+      if (page > this.pagination.last_page) {
+        page = this.pagination.last_page;
+      }
+      this.pagination.current_page = page;
+      this.$emit('paginate');
+    }
+  }
 });
 
 /***/ }),
@@ -112927,8 +112937,8 @@ var render = function() {
       _c(
         "ul",
         { staticClass: "pagination-list" },
-        _vm._l(_vm.pages, function(page) {
-          return _c("li", [
+        _vm._l(_vm.pages, function(page, index) {
+          return _c("li", { key: index }, [
             _c(
               "a",
               {
@@ -112964,67 +112974,66 @@ if (false) {
 /* 216 */
 /***/ (function(module, exports) {
 
-Vue.mixin({
-    methods: {
-        followRoute: function followRoute() {
-            var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-            var id = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+window.Vue.mixin({
+  methods: {
+    followRoute: function followRoute() {
+      var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      var id = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
-            if (name != null && id != null) {
-                return this.$router.push({ name: name, params: { id: id } });
-            } else if (name != null) {
-                return this.$router.push({ name: name });
-            }
-        },
-        returnFormState: function returnFormState() {
-            return { "$dirty": false, "$pristine": true, "$valid": false, "$invalid": true, "$submitted": false, "$touched": false, "$untouched": true,
-                "$focused": false, "$pending": false, "$error": {}, "$submittedState": {},
-                "name": { "$name": "name", "$dirty": false, "$pristine": true, "$valid": false, "$invalid": true,
-                    "$touched": false, "$untouched": true, "$focused": false, "$pending": false, "$error": { "required": true } },
-                "email": { "$name": "email", "$dirty": false, "$pristine": true, "$valid": false, "$invalid": true, "$touched": false,
-                    "$untouched": true, "$focused": false, "$pending": false, "$error": { "email": true }
-                }
-            };
-        },
-        Headers: function Headers() {
-            return { headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') } };
-        },
-        fieldClassName: function fieldClassName(field) {
-            if (!field) {
-                return '';
-            }
-            if ((field.$touched || field.$submitted) && field.$valid) {
-                return 'has-success';
-            }
-            if ((field.$touched || field.$submitted) && field.$invalid) {
-                return 'has-danger';
-            }
-        },
-        defaultImage: function defaultImage() {
-            return 'https://semantic-ui.com/images/wireframe/image.png';
-        },
-        in_array: function in_array(needle, haystack) {
-            var length = haystack.length;
-            for (var i = 0; i < length; i++) {
-                if (haystack[i] == needle) return true;
-            }
-            return false;
+      if (name != null && id != null) {
+        return this.$router.push({ name: name, params: { id: id } });
+      } else if (name != null) {
+        return this.$router.push({ name: name });
+      }
+    },
+    returnFormState: function returnFormState() {
+      return { '$dirty': false, '$pristine': true, '$valid': false, '$invalid': true, '$submitted': false, '$touched': false, '$untouched': true,
+        '$focused': false, '$pending': false, '$error': {}, '$submittedState': {},
+        'name': { '$name': 'name', '$dirty': false, '$pristine': true, '$valid': false, '$invalid': true,
+          '$touched': false, '$untouched': true, '$focused': false, '$pending': false, '$error': { 'required': true } },
+        'email': { '$name': 'email', '$dirty': false, '$pristine': true, '$valid': false, '$invalid': true, '$touched': false,
+          '$untouched': true, '$focused': false, '$pending': false, '$error': { 'email': true }
         }
+      };
+    },
+    Headers: function Headers() {
+      return { headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') } };
+    },
+    fieldClassName: function fieldClassName(field) {
+      if (!field) {
+        return '';
+      }
+      if ((field.$touched || field.$submitted) && field.$valid) {
+        return 'has-success';
+      }
+      if ((field.$touched || field.$submitted) && field.$invalid) {
+        return 'has-danger';
+      }
+    },
+    defaultImage: function defaultImage() {
+      return 'https://semantic-ui.com/images/wireframe/image.png';
+    },
+    in_array: function in_array(needle, haystack) {
+      if (haystack.includes(needle)) {
+        return true;
+      }
+      return false;
     }
+  }
 });
 
 /***/ }),
 /* 217 */
 /***/ (function(module, exports) {
 
-Vue.filter('getLanguageNameById', function (languages, lang_id) {
-    return languages.find(function (lang) {
-        return lang.id === lang_id;
-    });
+window.Vue.filter('getLanguageNameById', function (languages, lang_id) {
+  return languages.find(function (lang) {
+    return lang.id === lang_id;
+  });
 });
 
-Vue.filter('extractLanguageName', function (language) {
-    return language.name;
+window.Vue.filter('extractLanguageName', function (language) {
+  return language.name;
 });
 
 /***/ }),
@@ -113047,21 +113056,21 @@ Vue.filter('extractLanguageName', function (language) {
 
 
 var _routes = [{
-    path: '/admin',
-    name: 'DashboardBrowser',
-    component: __WEBPACK_IMPORTED_MODULE_0__components_admin_DashboardBrowser_vue___default.a
+  path: '/admin',
+  name: 'DashboardBrowser',
+  component: __WEBPACK_IMPORTED_MODULE_0__components_admin_DashboardBrowser_vue___default.a
 }, {
-    path: '/admin/invoices',
-    name: 'InvoicesBrowser',
-    component: __WEBPACK_IMPORTED_MODULE_1__components_admin_invoices_InvoicesBrowser_vue___default.a
+  path: '/admin/invoices',
+  name: 'InvoicesBrowser',
+  component: __WEBPACK_IMPORTED_MODULE_1__components_admin_invoices_InvoicesBrowser_vue___default.a
 }, {
-    path: '/admin/invoices/create',
-    name: 'CreateInvoice',
-    component: __WEBPACK_IMPORTED_MODULE_2__components_admin_invoices_CreateInvoice_vue___default.a
+  path: '/admin/invoices/create',
+  name: 'CreateInvoice',
+  component: __WEBPACK_IMPORTED_MODULE_2__components_admin_invoices_CreateInvoice_vue___default.a
 }, {
-    path: '/admin/invoices/:id/edit',
-    name: 'EditInvoice',
-    component: __WEBPACK_IMPORTED_MODULE_3__components_admin_invoices_EditInvoice_vue___default.a
+  path: '/admin/invoices/:id/edit',
+  name: 'EditInvoice',
+  component: __WEBPACK_IMPORTED_MODULE_3__components_admin_invoices_EditInvoice_vue___default.a
 }];
 var routes = _routes;
 
@@ -113136,9 +113145,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    mounted: function mounted() {
-        console.log('Component mounted.');
-    }
+  mounted: function mounted() {
+    console.log('Component mounted.');
+  }
 });
 
 /***/ }),
@@ -113165,9 +113174,7 @@ var staticRenderFns = [
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "card-body" }, [
-              _vm._v(
-                "\n                    I'm an example component.\n                "
-              )
+              _vm._v("\n          I'm an example component.\n        ")
             ])
           ])
         ])
@@ -113286,122 +113293,124 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    mounted: function mounted() {
-        // this.getData();
+  data: function data() {
+    return {
+      data: [],
+      text: 'Invoices Browser',
+      pagination: {
+        current_page: 1,
+        last_page: 1,
+        total: null,
+        per_page: 25,
+        from: null,
+        to: null
+      },
+      params: {
+        page: 1,
+        limit: 25,
+        orderDirection: 'desc',
+        orderField: 'id',
+        status: null, // Created, prepared, paid
+        debitor_id: null,
+        attendant: null,
+        billing_number: null,
+        service_period: null,
+        receipt_date: null,
+        date_paid: null,
+        balance: null, // float
+        netto: null, // float
+        brutto: null, // float
+        debitor: null, // name of the debitor
+        invoice_id: null,
+        email: null
+      },
+      checkedStatuses: []
+    };
+  },
+
+  watch: {
+    $route: function $route(to, from) {
+      if (to !== from) {
+        this.getData();
+      }
     },
-    data: function data() {
-        return {
-            data: [],
-            text: '',
-            pagination: {
-                current_page: 1,
-                last_page: 1,
-                total: null,
-                per_page: 25,
-                from: null,
-                to: null
-            },
-            params: {
-                page: 1,
-                limit: 25,
-                orderDirection: "desc",
-                orderField: "id",
-                status: null, // Created, prepared, paid
-                debitor_id: null,
-                attendant: null,
-                billing_number: null,
-                service_period: null,
-                receipt_date: null,
-                date_paid: null,
-                balance: null, // float
-                netto: null, // float
-                brutto: null, // float
-                debitor: null, // name of the debitor
-                invoice_id: null,
-                email: null
-            },
-            checkedStatuses: []
-        };
+    params: function params(newValue, oldValue) {
+      // We can either watch the params values changes or make data fetch on Button submit
+      // this.getData();
     },
 
-    watch: {
-        $route: function $route(to, from) {
-            if (to != from) {
-                this.getData();
-            }
-        },
-        params: function params(newValue, oldValue) {
-            // We can either watch the params values changes or make data fetch on Button submit
-            // this.getData();
-        },
-
-        /*
-         *  In case of statuses change data will be fetched from the database again.
-         *  NOTE: Adding click delay on each item will be a great advantage. 
-         */
-        checkedStatuses: function checkedStatuses(newValue, oldValue) {
-            this.getData();
-        }
-    },
-    methods: {
-        Export: function Export() {
-            /*
-             *  The data sent in params is a paginated data.
-             *  We have to send other parameters to filter data which is going to be exported
-             *  
-             *  We will require queues for server side rendering, because annual data can be too large
-             *  And throw maximum execution time error or memory limit error!
-             */
-            /*this.$http.get('/admin/invoices/export', {
-                headers: { 'Accept':'application/json' }, 
-                params: {
-                    data: this.data,
-                }
-            }).then(response => {
-             }, function(error) {
-                console.log(error);
-            });*/
-
-            this.$http.post('/admin/invoices/export', this.data, this.Headers()).then(function (response) {
-                var fileDownload = __webpack_require__(224);
-                fileDownload(response.data, 'filename.xlsx'); // Need too correct, returns corrupted file!
-            }, function (error) {
-                console.log(error);
-            });
-        },
-        changeDate: function changeDate(date) {
-            // To return custom value on date change
-            this.params.service_period = Vue.moment(date).format('YYYY-MM-DD, H:mm:ss');
-        },
-        getData: function getData() {
-            var _this = this;
-
-            this.params.page = this.pagination.current_page;
-            this.$http.get('/admin/invoices/browse_invoices', {
-                headers: { 'Accept': 'application/json' },
-                params: {
-                    params: this.params
-                }
-            }).then(function (response) {
-                /*
-                 *  After receiving the data we update the pagination object
-                 *  Push the list of debits to the Data variable and render the table
-                 */
-                if (_this.pagination.current_page == 1) {
-                    _this.pagination.current_page = response.data.page;
-                }
-                _this.pagination.last_page = response.data.page_count;
-                _this.pagination.total = response.data.total_items;
-                _this.pagination.per_page = 25;
-                _this.pagination.from = response.data.page;
-                _this.pagination.to = response.data.page + 1;
-
-                _this.data = response.data._embedded.list_debits;
-            }, function (error) {
-                console.log(error);
-            });
-        }
+    /*
+                         *  In case of statuses change data will be fetched from the database again.
+                         *  NOTE: Adding click delay on each item will be a great advantage.
+                         */
+    checkedStatuses: function checkedStatuses(newValue, oldValue) {
+      this.getData();
     }
+  },
+  mounted: function mounted() {
+    // this.getData();
+  },
+
+  methods: {
+    Export: function Export() {
+      /*
+      *  The data sent in params is a paginated data.
+      *  We have to send other parameters to filter data which is going to be exported
+      *
+      *  We will require queues for server side rendering, because annual data can be too large
+      *  And throw maximum execution time error or memory limit error!
+      */
+      /* this.$http.get('/admin/invoices/export', {
+            headers: { 'Accept':'application/json' },
+            params: {
+                data: this.data,
+            }
+        }).then(response => {
+          }, function(error) {
+            console.log(error);
+        });
+      */
+
+      this.$http.post('/admin/invoices/export', this.data, this.Headers()).then(function (response) {
+        var fileDownload = __webpack_require__(224);
+        fileDownload(response.data, 'filename.xlsx'); // Need too correct, returns corrupted file!
+      }, function (error) {
+        console.log(error);
+      });
+    },
+    changeDate: function changeDate(date) {
+      // To return custom value on date change
+      this.params.service_period = Window.Vue.moment(date).format('YYYY-MM-DD, H:mm:ss');
+    },
+    getData: function getData() {
+      var _this = this;
+
+      this.params.page = this.pagination.current_page;
+      this.$http.get('/admin/invoices/browse_invoices', {
+        headers: { 'Accept': 'application/json' },
+        params: {
+          params: this.params
+        }
+      }).then(function (response) {
+        /*
+        *  After receiving the data we update the pagination object
+        *  Push the list of debits to the Data variable and render the table
+        */
+        if (_this.pagination.current_page === 1) {
+          _this.pagination.current_page = response.data.page;
+        }
+        _this.pagination.last_page = response.data.page_count;
+        _this.pagination.total = response.data.total_items;
+        _this.pagination.per_page = 25;
+        _this.pagination.from = response.data.page;
+        _this.pagination.to = response.data.page + 1;
+
+        _this.data = response.data._embedded.list_debits;
+      }, function (error) {
+        console.log(error);
+      });
+    }
+  }
 });
 
 /***/ }),
@@ -113515,8 +113524,8 @@ var render = function() {
           _vm._v(" "),
           _c(
             "tbody",
-            _vm._l(_vm.data, function(item) {
-              return _c("tr", [
+            _vm._l(_vm.data, function(item, index) {
+              return _c("tr", { key: index }, [
                 _c("th", [_vm._v(_vm._s(item.id))]),
                 _vm._v(" "),
                 _c("th", [_vm._v(_vm._s(item.Debitor.name))]),
@@ -113664,9 +113673,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    mounted: function mounted() {
-        console.log('Component mounted.');
-    }
+  mounted: function mounted() {
+    console.log('Component mounted.');
+  }
 });
 
 /***/ }),
@@ -113693,9 +113702,7 @@ var staticRenderFns = [
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "card-body" }, [
-              _vm._v(
-                "\n                    I'm an example component.\n                "
-              )
+              _vm._v("\n          I'm an example component.\n        ")
             ])
           ])
         ])
@@ -113850,105 +113857,105 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    mounted: function mounted() {
-        // this.getData();
-    },
-    data: function data() {
-        return {
-            invoice: {
-                id: null,
-                debitor_id: null,
-                receipt_id: null,
-                attendant: null,
-                billing_number: null,
-                service_period: null,
-                term_of_credit: null,
-                no_tax: null,
-                is_payment_instructed: null,
-                Debitor: {
-                    id: null,
-                    contact_id: null,
-                    number: null,
-                    tax_number: null,
-                    debit_payment: null,
-                    iban: null,
-                    bic: null,
-                    email: null,
-                    send_email_bills: null,
-                    deactivated: null,
-                    language: null,
-                    last_invoice_number: null,
-                    name: null,
-                    street: null,
-                    postcode: null,
-                    location: null,
-                    country: null,
-                    crm_id: null
-                },
-                remarks: null,
-                receipt_date: null,
-                date_paid: null,
-                balance: null,
-                file: {
-                    id: null,
-                    filename: null,
-                    file_url: null,
-                    file_exists: null
-                },
-                excluded_reminder: null,
-                items: [{
-                    id: null,
-                    description: null,
-                    amount: null,
-                    price: null,
-                    measurement: null,
-                    vat_rate: null,
-                    sum: null
-                }],
-                attachment: {
-                    id: null,
-                    filename: null,
-                    file_url: null,
-                    file_exists: null
-                },
-                netto: null,
-                brutto: null,
-                type: null,
-                due_date: null
-            },
-            total_vat: 0
-        };
-    },
-
-    methods: {
-        /*
-         *  To calculate total VAT
-         *  We take each vat_rate from items array and add it to previous value
-         */
-        totalVat: function totalVat() {
-            this.total_vat = 0;
-            for (var i in invoice.items) {
-                this.total_vat += invoice.items[i].vat_rate;
-            }
+  data: function data() {
+    return {
+      invoice: {
+        id: null,
+        debitor_id: null,
+        receipt_id: null,
+        attendant: null,
+        billing_number: null,
+        service_period: null,
+        term_of_credit: null,
+        no_tax: null,
+        is_payment_instructed: null,
+        Debitor: {
+          id: null,
+          contact_id: null,
+          number: null,
+          tax_number: null,
+          debit_payment: null,
+          iban: null,
+          bic: null,
+          email: null,
+          send_email_bills: null,
+          deactivated: null,
+          language: null,
+          last_invoice_number: null,
+          name: null,
+          street: null,
+          postcode: null,
+          location: null,
+          country: null,
+          crm_id: null
         },
-        getData: function getData() {
-            var _this = this;
+        remarks: null,
+        receipt_date: null,
+        date_paid: null,
+        balance: null,
+        file: {
+          id: null,
+          filename: null,
+          file_url: null,
+          file_exists: null
+        },
+        excluded_reminder: null,
+        items: [{
+          id: null,
+          description: null,
+          amount: null,
+          price: null,
+          measurement: null,
+          vat_rate: null,
+          sum: null
+        }],
+        attachment: {
+          id: null,
+          filename: null,
+          file_url: null,
+          file_exists: null
+        },
+        netto: null,
+        brutto: null,
+        type: null,
+        due_date: null
+      },
+      total_vat: 0
+    };
+  },
+  mounted: function mounted() {
+    // this.getData();
+  },
+  created: function created() {
+    this.invoice.id = this.$route.params.id;
+  },
 
-            this.$http.get('/admin/invoices/browse_invoices', {
-                headers: { 'Accept': 'application/json' },
-                params: {
-                    id: this.invoice.id
-                }
-            }).then(function (response) {
-                _this.invoice = response.data;
-            }, function (error) {
-                console.log(error);
-            });
-        }
+  methods: {
+    /*
+     *  To calculate total VAT
+     *  We take each vat_rate from items array and add it to previous value
+     */
+    totalVat: function totalVat() {
+      this.total_vat = 0;
+      for (var i in this.invoice.items) {
+        this.total_vat += this.invoice.items[i].vat_rate;
+      }
     },
-    created: function created() {
-        this.invoice.id = this.$route.params.id;
+    getData: function getData() {
+      var _this = this;
+
+      this.$http.get('/admin/invoices/browse_invoices', {
+        headers: { 'Accept': 'application/json' },
+        params: {
+          id: this.invoice.id
+        }
+      }).then(function (response) {
+        _this.invoice = response.data;
+      }, function (error) {
+        console.log(error);
+      });
     }
+  }
 });
 
 /***/ }),
@@ -114060,8 +114067,8 @@ var render = function() {
                 _vm._v(" "),
                 _c(
                   "tbody",
-                  _vm._l(_vm.invoice.items, function(item) {
-                    return _c("tr", [
+                  _vm._l(_vm.invoice.items, function(item, index) {
+                    return _c("tr", { key: index }, [
                       _c("td", [_vm._v(_vm._s(item.id))]),
                       _vm._v(" "),
                       _c("td", [_vm._v(_vm._s(item.description))]),

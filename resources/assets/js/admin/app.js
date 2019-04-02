@@ -4,10 +4,9 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('../bootstrap');
-
-window.Vue = require('vue');
-
+require('../bootstrap')
+window.Vue = require('vue')
+const Vue = window.Vue
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -19,7 +18,7 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('example-component', require('../components/ExampleComponent.vue').default);
+Vue.component('example-component', require('../components/ExampleComponent.vue').default)
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -27,54 +26,54 @@ Vue.component('example-component', require('../components/ExampleComponent.vue')
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-import VueResource from 'vue-resource';
-import VueSwal from 'vue-swal';
-import VueForm from 'vue-form';
-import ElementUI from 'element-ui';
-import VueMoment from 'vue-moment';
-import locale from 'element-ui/lib/locale/lang/en';
-import 'element-ui/lib/theme-chalk/index.css';
-import VueRouter from 'vue-router';
+import VueResource from 'vue-resource'
+import VueSwal from 'vue-swal'
+import VueForm from 'vue-form'
+import ElementUI from 'element-ui'
+import VueMoment from 'vue-moment'
+import locale from 'element-ui/lib/locale/lang/en'
+import 'element-ui/lib/theme-chalk/index.css'
+import VueRouter from 'vue-router'
 // import PulseLoader from 'vue-spinner/src/PulseLoader.vue';
 
-Vue.use(ElementUI, { locale });
-Vue.use(VueResource);
+Vue.use(ElementUI, { locale })
+Vue.use(VueResource)
 // Vue.use(PulseLoader);
-Vue.use(VueRouter);
-Vue.use(VueMoment);
-Vue.use(VueSwal);
+Vue.use(VueRouter)
+Vue.use(VueMoment)
+Vue.use(VueSwal)
 
 Vue.use(VueForm, {
-    inputClasses: {
-        valid: 'form-control-success',
-        invalid: 'form-control-danger'
+  inputClasses: {
+    valid: 'form-control-success',
+    invalid: 'form-control-danger'
+  },
+  validators: {
+    matches: function(value, attrValue) {
+      if (!attrValue) {
+        return true
+      }
+      return value === attrValue
     },
-    validators: {
-        matches: function (value, attrValue) {
-            if (!attrValue) {
-                return true;
-            }
-            return value === attrValue;
-        },
-        'password-strength': function (value) {
-            // return /(?=^.{6,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/.test(value);
-            return /(?=^.{6,}$)(?=.*[a-z]).*$/.test(value);
-        }
-    },
-});
-Vue.component('pagination', require('../components/pagination.vue'));
+    'password-strength': function(value) {
+      // return /(?=^.{6,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/.test(value);
+      return /(?=^.{6,}$)(?=.*[a-z]).*$/.test(value)
+    }
+  }
+})
+Vue.component('pagination', require('../components/pagination.vue'))
 
-require('../vueMixins');
-require('../vueFilters');
+require('../vueMixins')
+require('../vueFilters')
 
-import { routes } from './routes';
+import { routes } from './routes'
 
 const router = new VueRouter({
-    mode: 'history',
-    routes
-});
+  mode: 'history',
+  routes
+})
 
-const app = new Vue({
-    el: '#app',
-    router,
-});
+new Vue({
+  el: '#app',
+  router
+})

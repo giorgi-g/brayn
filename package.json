@@ -11,12 +11,22 @@
     "watch-poll": "npm run watch -- --watch-poll",
     "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
     "prod": "npm run production",
+    "eslint": "node_modules/eslint/bin/eslint.js . --fix",
+    "watch:lint": "node node_modules/eslint-watch/bin/esw -w --ext .js,.vue resources/assets/ --fix --cache",
+    "lint": "eslint .js,.vue resources/assets/ --fix",
+    "precommit": "lint-staged",
     "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
     "test": "cross-env NODE_ENV=development mocha-webpack --webpack-config=node_modules/laravel-mix/setup/webpack.config.js --watch --require tests/Javascript/setup.js tests/Javascript/**/*.spec.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/giorgi-g/brayn.git"
+  },
+  "lint-staged": {
+    "resources/assets/**/**/*.{js,vue}": [
+      "eslint --fix",
+      "git add"
+    ]
   },
   "dependencies": {
     "vue-browser-geolocation": "^1.0.1",
@@ -35,6 +45,7 @@
     "vuelidate": "^0.6.2"
   },
   "devDependencies": {
+    "@babel/polyfill": "^7.4.0",
     "@vue/cli-plugin-babel": "^3.5.0",
     "@vue/cli-plugin-e2e-cypress": "^3.5.0",
     "@vue/cli-plugin-eslint": "^3.5.0",
@@ -54,6 +65,7 @@
     "element-ui": "^2.6.3",
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0",
+    "eslint-watch": "^5.0.1",
     "expect": "^21.2.1",
     "font-awesome": "^4.7.0",
     "jquery": "^3.2",

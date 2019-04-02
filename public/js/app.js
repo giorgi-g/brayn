@@ -14069,7 +14069,9 @@ try {
   window.$ = window.jQuery = __webpack_require__(8);
 
   __webpack_require__(28);
-} catch (e) {}
+} catch (e) {
+  console.log(e);
+}
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -48850,9 +48852,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    mounted: function mounted() {
-        // console.log('Component mounted.')
-    }
+  mounted: function mounted() {
+    // console.log('Component mounted.')
+  }
 });
 
 /***/ }),
@@ -48879,9 +48881,7 @@ var staticRenderFns = [
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "card-body" }, [
-              _vm._v(
-                "\n                    I'm an example component.\n                "
-              )
+              _vm._v("\n          I'm an example component.\n        ")
             ])
           ])
         ])
@@ -48975,6 +48975,7 @@ module.exports = __webpack_require__(113);
 __webpack_require__(25);
 
 window.Vue = __webpack_require__(3);
+var Vue = window.Vue;
 
 /**
  * The following block of code may be used to automatically register your
@@ -48995,9 +48996,9 @@ Vue.component('example-component', __webpack_require__(51).default);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-var app = new Vue({
+/* const app = new Vue({
   el: '#app'
-});
+})*/
 
 /***/ }),
 /* 109 */
