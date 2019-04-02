@@ -92,9 +92,9 @@ export default {
       // this.getData();
     },
     /*
-                         *  In case of statuses change data will be fetched from the database again.
-                         *  NOTE: Adding click delay on each item will be a great advantage.
-                         */
+     *  In case of statuses change data will be fetched from the database again.
+     *  NOTE: Adding click delay on each item will be a great advantage.
+     */
     checkedStatuses: function(newValue, oldValue) {
       this.getData()
     }
